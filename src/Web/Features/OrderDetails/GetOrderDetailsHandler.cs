@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
@@ -6,17 +6,29 @@ using Microsoft.eShopWeb.Web.ViewModels;
 
 namespace Microsoft.eShopWeb.Web.Features.OrderDetails;
 
+/// <summary>
+/// The GetOrderDetailsHandler class is responsible for handling the GetOrderDetails request and returning an OrderDetailViewModel.
+/// </summary>
 public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDetailViewModel?>
 {
     private readonly IReadRepository<Order> _orderRepository;
 
+    /// <summary>
+    /// Initializes a new instance of the GetOrderDetailsHandler class with an injected order repository.
+    /// </summary>
+    /// <param name="orderRepository">The injected order repository.</param>
     public GetOrderDetailsHandler(IReadRepository<Order> orderRepository)
     {
         _orderRepository = orderRepository;
     }
 
-    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request,
-        CancellationToken cancellationToken)
+    /// <summary>
+    /// Handles the GetOrderDetails request by retrieving an OrderDetailViewModel from the order repository.
+    /// </summary>
+    /// <param name="request">The GetOrderDetails request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An OrderDetailViewModel containing information about the requested order.</returns>
+    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request, CancellationToken cancellationToken)
     {
         var spec = new OrderWithItemsByIdSpec(request.OrderId);
         var order = await _orderRepository.FirstOrDefaultAsync(spec, cancellationToken);
