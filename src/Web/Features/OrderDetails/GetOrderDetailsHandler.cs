@@ -3,6 +3,10 @@ using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.Web.ViewModels;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Microsoft.eShopWeb.Web.Features.OrderDetails;
 
@@ -26,10 +30,13 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
             return null;
         }
 
+        // New method to sort the order items by price in descending order
+        var sortedOrderItems = order.OrderItems.OrderByDescending(oi => oi.UnitPrice).ToList();
+
         return new OrderDetailViewModel
         {
             OrderDate = order.OrderDate,
-            OrderItems = order.OrderItems.Select(oi => new OrderItemViewModel
+            OrderItems = sortedOrderItems.Select(oi => new OrderItemViewModel
             {
                 PictureUrl = oi.ItemOrdered.PictureUri,
                 ProductId = oi.ItemOrdered.CatalogItemId,
