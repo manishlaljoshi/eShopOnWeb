@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
@@ -15,31 +15,33 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
         _orderRepository = orderRepository;
     }
 
-    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request,
-        CancellationToken cancellationToken)
+    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request, CancellationToken cancellationToken)
+{
+    var spec = new OrderWithItemsByIdSpec(request.OrderId);
+    var order = await _orderRepository.FirstOrDefaultAsync(spec, cancellationToken);
+
+    if (order == null)
     {
-        var spec = new OrderWithItemsByIdSpec(request.OrderId);
-        var order = await _orderRepository.FirstOrDefaultAsync(spec, cancellationToken);
-
-        if (order == null)
-        {
-            return null;
-        }
-
-        return new OrderDetailViewModel
-        {
-            OrderDate = order.OrderDate,
-            OrderItems = order.OrderItems.Select(oi => new OrderItemViewModel
-            {
-                PictureUrl = oi.ItemOrdered.PictureUri,
-                ProductId = oi.ItemOrdered.CatalogItemId,
-                ProductName = oi.ItemOrdered.ProductName,
-                UnitPrice = oi.UnitPrice,
-                Units = oi.Units
-            }).ToList(),
-            OrderNumber = order.Id,
-            ShippingAddress = order.ShipToAddress,
-            Total = order.Total()
-        };
+        return null;
     }
+
+    // Sort the order items by price from highest to lowest
+    var sortedItems = order.OrderItems.OrderByDescending(oi => oi.UnitPrice).ToList();
+
+    return new OrderDetailViewModel
+    {
+        OrderDate = order.OrderDate,
+        OrderItems = sortedItems.Select(oi => new OrderItemViewModel
+        {
+            PictureUrl = oi.ItemOrdered.PictureUri,
+            ProductId = oi.ItemOrdered.CatalogItemId,
+            ProductName = oi.ItemOrdered.ProductName,
+            UnitPrice = oi.UnitPrice,
+            Units = oi.Units
+        }).ToList(),
+        OrderNumber = order.Id,
+        ShippingAddress = order.ShipToAddress,
+        Total = order.Total()
+    };
+}
 }
