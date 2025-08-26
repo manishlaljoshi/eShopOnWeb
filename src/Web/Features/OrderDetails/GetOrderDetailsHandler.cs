@@ -3,6 +3,7 @@ using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.Web.ViewModels;
+using System.Linq;
 
 namespace Microsoft.eShopWeb.Web.Features.OrderDetails;
 
@@ -15,8 +16,7 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
         _orderRepository = orderRepository;
     }
 
-    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request,
-        CancellationToken cancellationToken)
+    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request, CancellationToken cancellationToken)
     {
         var spec = new OrderWithItemsByIdSpec(request.OrderId);
         var order = await _orderRepository.FirstOrDefaultAsync(spec, cancellationToken);
