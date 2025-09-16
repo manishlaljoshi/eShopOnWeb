@@ -26,6 +26,10 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
             return null;
         }
 
+        // Calculate the tax based on the standard tax rate
+        var taxRate = 0.1m;
+        var totalWithTax = order.Total() * (1 + taxRate);
+
         return new OrderDetailViewModel
         {
             OrderDate = order.OrderDate,
@@ -39,7 +43,7 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
             }).ToList(),
             OrderNumber = order.Id,
             ShippingAddress = order.ShipToAddress,
-            Total = order.Total()
+            Total = totalWithTax
         };
     }
 }
