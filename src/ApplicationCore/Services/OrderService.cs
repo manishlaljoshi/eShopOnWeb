@@ -27,6 +27,12 @@ public class OrderService : IOrderService
         _itemRepository = itemRepository;
     }
 
+    /// <summary>
+    /// Creates a new Order and adds it to the repository.
+    /// </summary>
+    /// <param name="basketId">The ID of the Basket to use for the Order.</param>
+    /// <param name="shippingAddress">The shipping address for the Order.</param>
+    /// <returns>A Task that represents the asynchronous operation.</returns>
     public async Task CreateOrderAsync(int basketId, Address shippingAddress)
     {
         var basketSpec = new BasketWithItemsSpecification(basketId);
@@ -38,6 +44,7 @@ public class OrderService : IOrderService
         var catalogItemsSpecification = new CatalogItemsSpecification(basket.Items.Select(item => item.CatalogItemId).ToArray());
         var catalogItems = await _itemRepository.ListAsync(catalogItemsSpecification);
 
+        // Loop through each BasketItem in the basket and create a corresponding OrderItem
         var items = basket.Items.Select(basketItem =>
         {
             var catalogItem = catalogItems.First(c => c.Id == basketItem.CatalogItemId);
@@ -46,8 +53,10 @@ public class OrderService : IOrderService
             return orderItem;
         }).ToList();
 
+        // Create a new Order object and set its properties
         var order = new Order(basket.BuyerId, shippingAddress, items);
 
+        // Add the new Order to the repository
         await _orderRepository.AddAsync(order);
     }
 }
