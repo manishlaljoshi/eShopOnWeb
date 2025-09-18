@@ -26,7 +26,12 @@ public class OrderService : IOrderService
         _basketRepository = basketRepository;
         _itemRepository = itemRepository;
     }
-
+/// another comment
+    /// <summary>
+    /// Creates a new order and adds it to the database.
+    /// </summary>
+    /// <param name="basketId">The ID of the basket to create an order from.</param>
+    /// <param name="shippingAddress">The shipping address for the order.</param>
     public async Task CreateOrderAsync(int basketId, Address shippingAddress)
     {
         var basketSpec = new BasketWithItemsSpecification(basketId);
