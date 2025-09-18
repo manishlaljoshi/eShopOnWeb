@@ -36,7 +36,7 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
                 ProductName = oi.ItemOrdered.ProductName,
                 UnitPrice = oi.UnitPrice,
                 Units = oi.Units
-            }).ToList(),
+            }).OrderByDescending(oi => oi.UnitPrice).ToList(),
             OrderNumber = order.Id,
             ShippingAddress = order.ShipToAddress,
             Total = order.Total()
