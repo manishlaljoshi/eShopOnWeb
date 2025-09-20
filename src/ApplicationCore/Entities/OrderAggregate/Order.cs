@@ -44,4 +44,8 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+
+    // User's requested changes
+    public decimal CalculateTax() => Total() * 0.08m;
+    public decimal TaxWithTotal() => CalculateTax() + Total();
 }
