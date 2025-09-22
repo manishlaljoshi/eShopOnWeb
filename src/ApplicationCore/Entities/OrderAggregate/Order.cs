@@ -44,4 +44,14 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+    
+    public decimal TaxTotal(decimal taxRate=0.08m)
+    {
+        return Total() * taxRate;
+    }
+    
+    public decimal TotalWithTax()
+    {
+        return Total() + TaxTotal();
+    }
 }
