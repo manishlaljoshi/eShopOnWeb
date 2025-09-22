@@ -9,6 +9,8 @@ public class OrderViewModel
     public int OrderNumber { get; set; }
     public DateTimeOffset OrderDate { get; set; }
     public decimal Total { get; set; }
+    public decimal TaxAmount { get; set; }
     public string Status => DEFAULT_STATUS;
     public Address? ShippingAddress { get; set; }
+    public decimal TotalWithTax {get;set;}
 }

@@ -44,4 +44,18 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+
+    // New method to calculate tax based on order total and specified tax rate
+    public decimal CalculateTax(decimal taxRate=8.0m)
+    {
+        var tax = Total() * (taxRate / 100);
+        return tax;
+    }
+
+    // New method to sum Total with Calculated Tax
+    public decimal TotalWithTax()
+    {
+        var totalWithTax = Total() + CalculateTax(8.0m); // Assume a default tax rate of 21%
+        return totalWithTax;
+    }
 }
