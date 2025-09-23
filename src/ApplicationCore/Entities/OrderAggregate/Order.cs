@@ -44,4 +44,9 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+    
+    // New method to calculate tax based on the default tax rate of 8%
+    public decimal CalculateTax() => Total() * 0.08m;
+    
+    public decimal TotalWithTax() => Total() * CalculateTax();
 }
