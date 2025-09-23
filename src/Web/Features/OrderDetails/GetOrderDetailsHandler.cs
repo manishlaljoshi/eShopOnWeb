@@ -15,8 +15,7 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
         _orderRepository = orderRepository;
     }
 
-    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request,
-        CancellationToken cancellationToken)
+    public async Task<OrderDetailViewModel?> Handle(GetOrderDetails request, CancellationToken cancellationToken)
     {
         var spec = new OrderWithItemsByIdSpec(request.OrderId);
         var order = await _orderRepository.FirstOrDefaultAsync(spec, cancellationToken);
@@ -28,6 +27,8 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
 
         return new OrderDetailViewModel
         {
+            TaxAmount = order.CalculateTax(),
+            TotalAmount = order.TotalAmount(),
             OrderDate = order.OrderDate,
             OrderItems = order.OrderItems.Select(oi => new OrderItemViewModel
             {
@@ -39,7 +40,6 @@ public class GetOrderDetailsHandler : IRequestHandler<GetOrderDetails, OrderDeta
             }).ToList(),
             OrderNumber = order.Id,
             ShippingAddress = order.ShipToAddress,
-            Total = order.Total()
         };
     }
 }

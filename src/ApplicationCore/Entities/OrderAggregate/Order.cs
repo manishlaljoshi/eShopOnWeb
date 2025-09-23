@@ -44,4 +44,10 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+    
+    // Add new function named 'CalculateTax' to the Order class that takes the order total and tax rate as input, calculates the tax amount based on the formula (orderTotal * taxRate), rounds the result to two decimal places, and returns the resulting tax amount. 
+    public decimal CalculateTax(decimal taxRate=0.08m) => Math.Round(Total() * taxRate, 2);
+    
+    // Add another method named 'TotalAmount' which is summation of TotalTax + Total
+    public decimal TotalAmount() => Total() + CalculateTax();
 }
